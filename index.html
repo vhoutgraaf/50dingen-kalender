@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="refresh" content="2; url=kalender.html" />
+		<script src="js/jquery-3.1.1.min.js"></script>
+		<script>
+
+		var teller = 10;
+
+		$(document).ready(function(){
+//			setTimeout(invuller(teller), 1000);
+//			$("#afteller").text("blah");
+		});
+
+		function invuller(waarde) {
+			$("#afteller").text(waarde);
+			teller--;
+		}
+		
+	</script>
+
+	</head>
+	<body>
+		<div id="afteller">Even geduld....</div>
+
+	</body>
+</html>

@@ -1,0 +1,109 @@
+
+/* begin algemene instellingen */
+.divalgemeen {
+	border:1px solid red;
+	margin:5px;
+	padding:4px;
+	text-align:center;
+}
+
+#debugDiv {
+	visibility:hidden;
+}
+/* einde algemene instellingen */
+
+
+
+
+/* begin instellingen: */
+#instellingenDiv {
+	border:2px solid grey;
+	visibility:block;
+}
+#keuzeDiv {
+	border:2px solid grey;
+	margin:5px;
+	padding:4px;
+	text-align:left;
+}
+
+#startmaandSelect {
+	border:1px solid blue;
+	margin:5px;
+	padding:4px;
+	text-align:center;
+}
+
+.linkVoorOpslagVerborgen{
+	visibility:hidden;
+}
+.linkVoorOpslagZichtbaar{
+	visibility:block;
+}
+/* einde instellingen: */
+
+
+
+
+
+/* begin invoer */
+#invoerDiv {
+	border:1px solid grey;
+	visibility:block;
+}
+
+.invoerElement {
+	text-align: left;
+	margin-bottom:20px;
+}
+.invoerLabel {
+	width:100px;
+	padding:5px;
+	margin:5px;
+}
+.invoerMaandTitel {
+	margin:5px 5px 5px 10px;
+	width:500px;
+}
+.invoerMaandTekst {
+	margin:5px;
+	width:500px;
+	height:100px;
+}
+.invoerLabel {
+	vertical-align:top;
+}
+/* einde invoer */
+
+
+
+/* begin resultaat */
+#resultaatDiv {
+	background-image: url("file:///K:/Projecten/kalender-50-dingen/img/achtergrond01.JPG");
+	background-repeat: no-repeat;
+}
+
+.divResultaatZonderInstellingen {
+	border:0;
+	visibility:block;
+}
+.divResultaatSamenMetInstellingen {
+	border:2px solid grey;
+	visibility:block;
+}
+
+.resultaatElement  {
+	border:1px solid blue;
+	margin-bottom:20px;
+}
+.resultaatMaandTekst {
+	text-align: left;
+	border:0px;
+}
+.resultaatMaandTitel {
+	text-align: left;
+	border:0px;
+}
+/* einde resultaat */
+
+
