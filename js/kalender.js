@@ -1,19 +1,26 @@
 
 var $root = $('html, body');
-
-var kalenderInstellingen = kalenderDefaultsJSON;
+var gSelectedMaandIndex = 0;
+var gKalenderInstellingen = gKalenderDefaultsJSON;
 
 $(document).ready(function(){
 	var instellingen = getUrlParameter('instellingen');
+	var tmpMaandIndex = getUrlParameter('maandIndex');
 	if (typeof instellingen !== "undefined") {
-		kalenderInstellingen = JSON.parse(instellingen);
-		alert(JSON.stringify(kalenderInstellingen, null, 2));
+		gKalenderInstellingen = JSON.parse(instellingen);
+		alert(JSON.stringify(gKalenderInstellingen, null, 2));
 	} else {
 		alert('geen instellingen meegegeven');
 	}
 
-	fillDefaultData();
 	activateSelectStartmaand();
+	
+	if (typeof tmpMaandIndex !== "undefined") {
+		gSelectedMaandIndex = tmpMaandIndex;
+		$("#startmaandSelect").val(tmpMaandIndex);
+	}
+
+	fillDefaultData();
 	activateShowHidePrintInstellingen();
 	activateAnimatedLinkToResultaat();
 	activateSerializeJSONToString();
@@ -59,6 +66,7 @@ var activateSelectStartmaand = function() {
 			  selectedIndex = $( this ).val();
 			});
 			$( "#debugDiv" ).text( str );
+			gSelectedMaandIndex = selectedIndex*1;
 			fillInvoerMaandData(selectedIndex*1);
 		  })
 		  .trigger( "change" );
@@ -68,8 +76,10 @@ var activateSelectStartmaand = function() {
 // vul de invoerteksten voor de maanden in, te beginnen bij de geselecteerde maand
 var fillInvoerMaandData = function(selectedMaandIndex) {
 	for (var i=1; i<=12; i++) {
-		$("#invoerMaandTitel"+i).val(kalenderInstellingen.maanden[(i+selectedMaandIndex)<=12 ? i+selectedMaandIndex-1 : (i+selectedMaandIndex-1)%12].titel);
-		$("#invoerMaandTekst"+i).val(kalenderInstellingen.maanden[(i+selectedMaandIndex)<=12 ? i+selectedMaandIndex-1 : (i+selectedMaandIndex-1)%12].tekst);
+//		$("#invoerMaandTitel"+i).val(gKalenderInstellingen.maanden[(i+selectedMaandIndex)<=12 ? i+selectedMaandIndex-1 : (i+selectedMaandIndex-1)%12].titel);
+//		$("#invoerMaandTekst"+i).val(gKalenderInstellingen.maanden[(i+selectedMaandIndex)<=12 ? i+selectedMaandIndex-1 : (i+selectedMaandIndex-1)%12].tekst);
+		$("#invoerMaandTitel"+i).val(gKalenderInstellingen.maanden[i-1].titel);
+		$("#invoerMaandTekst"+i).val(gKalenderInstellingen.maanden[i-1].tekst);
 	}
 };
 
@@ -96,7 +106,7 @@ var activateAnimatedLinkToResultaat = function () {
 
 // dit is nodig om de instellingen op te kunnen slaan
 var maakJSONVanInvoer = function() {
-	var url = 'file:///K:/Projecten/kalender-50-dingen/kalender.html';
+	var url = document.location.href;
 	var json = '{"maanden": [';
 	var elBegin = '{';
 	var elEind = '}';
@@ -111,14 +121,14 @@ var maakJSONVanInvoer = function() {
 		}
 	}
 	json += ']}';
-	return url + '?instellingen=' + encodeURIComponent(json);
+	return url + '?maandIndex=' + gSelectedMaandIndex + '&instellingen=' + encodeURIComponent(json);
 }
 
 
 
 // maak een url die je kan opslaan
 var serializeJSONToString = function() {
-	var json_text = JSON.stringify(kalenderInstellingen, null, 2);
+	var json_text = JSON.stringify(gKalenderInstellingen, null, 2);
 	json_text = maakJSONVanInvoer();
 	return json_text;
 };

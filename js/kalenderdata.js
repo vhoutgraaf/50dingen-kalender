@@ -1,5 +1,5 @@
 
-var kalenderDefaultsJSON = {
+var gKalenderDefaultsJSON = {
 	"maanden": [{
 		"titel": "Januari",
 		"tekst": "Dit is de eerste maand van het jaar"
