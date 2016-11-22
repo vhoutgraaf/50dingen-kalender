@@ -5,22 +5,26 @@ var gKalenderInstellingen = gKalenderDefaultsJSON;
 
 $(document).ready(function(){
 	var instellingen = getUrlParameter('instellingen');
-	var tmpMaandIndex = getUrlParameter('maandIndex');
 	if (typeof instellingen !== "undefined") {
 		gKalenderInstellingen = JSON.parse(instellingen);
 		alert(JSON.stringify(gKalenderInstellingen, null, 2));
 	} else {
 		alert('geen instellingen meegegeven');
 	}
-
-	activateSelectStartmaand();
 	
+	activateSelectStartmaand();
+	var tmpMaandIndex = getUrlParameter('maandIndex');
+	if (typeof tmpMaandIndex === "undefined") {
+		tmpMaandIndex = getUrlParameter('maandindex');
+	}
 	if (typeof tmpMaandIndex !== "undefined") {
 		gSelectedMaandIndex = tmpMaandIndex;
 		$("#startmaandSelect").val(tmpMaandIndex);
 	}
+	fillInvoerMaandData(gSelectedMaandIndex);
 
-	fillDefaultData();
+
+//	fillDefaultData();
 	activateShowHidePrintInstellingen();
 	activateAnimatedLinkToResultaat();
 	activateSerializeJSONToString();
@@ -76,10 +80,10 @@ var activateSelectStartmaand = function() {
 // vul de invoerteksten voor de maanden in, te beginnen bij de geselecteerde maand
 var fillInvoerMaandData = function(selectedMaandIndex) {
 	for (var i=1; i<=12; i++) {
-//		$("#invoerMaandTitel"+i).val(gKalenderInstellingen.maanden[(i+selectedMaandIndex)<=12 ? i+selectedMaandIndex-1 : (i+selectedMaandIndex-1)%12].titel);
-//		$("#invoerMaandTekst"+i).val(gKalenderInstellingen.maanden[(i+selectedMaandIndex)<=12 ? i+selectedMaandIndex-1 : (i+selectedMaandIndex-1)%12].tekst);
-		$("#invoerMaandTitel"+i).val(gKalenderInstellingen.maanden[i-1].titel);
-		$("#invoerMaandTekst"+i).val(gKalenderInstellingen.maanden[i-1].tekst);
+		$("#invoerMaandTitel"+i).val(gKalenderInstellingen.maanden[(i+selectedMaandIndex)<=12 ? i+selectedMaandIndex-1 : (i+selectedMaandIndex-1)%12].titel);
+		$("#invoerMaandTekst"+i).val(gKalenderInstellingen.maanden[(i+selectedMaandIndex)<=12 ? i+selectedMaandIndex-1 : (i+selectedMaandIndex-1)%12].tekst);
+//		$("#invoerMaandTitel"+i).val(gKalenderInstellingen.maanden[i-1].titel);
+//		$("#invoerMaandTekst"+i).val(gKalenderInstellingen.maanden[i-1].tekst);
 	}
 };
 
@@ -112,10 +116,12 @@ var maakJSONVanInvoer = function() {
 	var elEind = '}';
 	var elQuote = '"';
 	var elLijm = ',';
-	for (var i=1; i<=12; i++) {
-		json += elBegin + elQuote + 'titel' + elQuote + ':' + elQuote + $("#invoerMaandTitel"+i).val() + elQuote;
+	for (var i=gSelectedMaandIndex; i<=gSelectedMaandIndex+11; i++) {
+		var ix = (i+gSelectedMaandIndex)<=12 ? i+gSelectedMaandIndex-1 : (i+gSelectedMaandIndex-1)%12;
+
+		json += elBegin + elQuote + 'titel' + elQuote + ':' + elQuote + $("#invoerMaandTitel"+ix).val() + elQuote;
 		json += elLijm;
-		json += elQuote + 'tekst' + elQuote + ':' + elQuote + $("#invoerMaandTekst"+i).val() + elQuote + elEind;
+		json += elQuote + 'tekst' + elQuote + ':' + elQuote + $("#invoerMaandTekst"+ix).val() + elQuote + elEind;
 		if (i!=12) {
 			json += ',';
 		}
