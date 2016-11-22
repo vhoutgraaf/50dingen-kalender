@@ -6,7 +6,8 @@ var gKalenderInstellingen = gKalenderDefaultsJSON;
 $(document).ready(function(){
 	var instellingen = getUrlParameter('instellingen');
 	if (typeof instellingen !== "undefined") {
-		gKalenderInstellingen = JSON.parse(instellingen);
+		alert(decodeURIComponent(instellingen));
+		gKalenderInstellingen = JSON.parse(decodeURIComponent(instellingen));
 		alert(JSON.stringify(gKalenderInstellingen, null, 2));
 	} else {
 		alert('geen instellingen meegegeven');
@@ -18,13 +19,11 @@ $(document).ready(function(){
 		tmpMaandIndex = getUrlParameter('maandindex');
 	}
 	if (typeof tmpMaandIndex !== "undefined") {
-		gSelectedMaandIndex = tmpMaandIndex;
+		gSelectedMaandIndex = tmpMaandIndex*1;
 		$("#startmaandSelect").val(tmpMaandIndex);
 	}
 	fillInvoerMaandData(gSelectedMaandIndex);
 
-
-//	fillDefaultData();
 	activateShowHidePrintInstellingen();
 	activateAnimatedLinkToResultaat();
 	activateSerializeJSONToString();
@@ -32,12 +31,6 @@ $(document).ready(function(){
 });
 
 
-
-var fillDefaultData = function() {
-	// vul de maanden in, te beginnen bij maand met index 0: dat is januari.
-	fillInvoerMaandData(0);
-	
-};
 
 // Show of Hide de Instellingen-div door te klikken op de resultaatDiv.
 // Eerst kijken of de Instellingen-div zichtbaar is. Zoja: verbergen. Zonee: laten zien.
@@ -55,6 +48,10 @@ var activateShowHidePrintInstellingen = function() {
 			$("#resultaatTitel").show();
 
 			$("#resultaatDiv").attr('class', 'divalgemeen divResultaatSamenMetInstellingen');
+
+			// scroll 'slow' naar het anchor 'anchorBijInstellingen'
+			// Een anchor is een plek in je pagina waarnaar je toe kan linken. Probeer maar eens file:///K:/Projecten/kalender-50-dingen/kalender.html#anchorBijInstellingen
+			$root.animate({ scrollTop: $("#anchorBijInstellingen").offset().top }, 'slow');
 		}
     });
 };
@@ -80,10 +77,9 @@ var activateSelectStartmaand = function() {
 // vul de invoerteksten voor de maanden in, te beginnen bij de geselecteerde maand
 var fillInvoerMaandData = function(selectedMaandIndex) {
 	for (var i=1; i<=12; i++) {
-		$("#invoerMaandTitel"+i).val(gKalenderInstellingen.maanden[(i+selectedMaandIndex)<=12 ? i+selectedMaandIndex-1 : (i+selectedMaandIndex-1)%12].titel);
-		$("#invoerMaandTekst"+i).val(gKalenderInstellingen.maanden[(i+selectedMaandIndex)<=12 ? i+selectedMaandIndex-1 : (i+selectedMaandIndex-1)%12].tekst);
-//		$("#invoerMaandTitel"+i).val(gKalenderInstellingen.maanden[i-1].titel);
-//		$("#invoerMaandTekst"+i).val(gKalenderInstellingen.maanden[i-1].tekst);
+		var ix = (i+selectedMaandIndex)<=12 ? i+selectedMaandIndex-1 : (i+selectedMaandIndex-1)%12;
+		$("#invoerMaandTitel"+i).val(gKalenderInstellingen.maanden[ix].titel);
+		$("#invoerMaandTekst"+i).val(gKalenderInstellingen.maanden[ix].tekst);
 	}
 };
 
@@ -96,8 +92,7 @@ var fillResultaatMaandData = function() {
 };
 
 
-// scroll langzaam naar het anchor '#anchorBijResultaat'
-// de # hoort hier niet bij jQuery om een HTML-taq met een bepaald id op te zoeken maar hoort bij aan anchor in de tekst. 
+// scroll 'slow' naar het anchor 'anchorBijResultaat'
 // Een anchor is een plek in je pagina waarnaar je toe kan linken. Probeer maar eens file:///K:/Projecten/kalender-50-dingen/kalender.html#anchorBijResultaat
 var activateAnimatedLinkToResultaat = function () {
 	$('#linkNaarResultaat').click(function(){
@@ -108,18 +103,21 @@ var activateAnimatedLinkToResultaat = function () {
 	});
 };
 
+
 // dit is nodig om de instellingen op te kunnen slaan
 var maakJSONVanInvoer = function() {
-	var url = document.location.href;
+	var url = (document.location.pathname).replace("#anchorBijResultaat", "");
 	var json = '{"maanden": [';
 	var elBegin = '{';
 	var elEind = '}';
 	var elQuote = '"';
 	var elLijm = ',';
-	for (var i=gSelectedMaandIndex; i<=gSelectedMaandIndex+11; i++) {
-		var ix = (i+gSelectedMaandIndex)<=12 ? i+gSelectedMaandIndex-1 : (i+gSelectedMaandIndex-1)%12;
+	for (var i=1; i<=12; i++) {
+		var ix = (12+i-gSelectedMaandIndex)%12 == 0 ? 12 : (12+i-gSelectedMaandIndex)%12;
 
-		json += elBegin + elQuote + 'titel' + elQuote + ':' + elQuote + $("#invoerMaandTitel"+ix).val() + elQuote;
+		var titel = $("#invoerMaandTitel"+ix).val().replace("\n", "\\n").replace('"', '\"').replace("'", "\'");
+		var tekst = $("#invoerMaandTekst"+ix).val().replace("\n", "\\n").replace('"', '\"').replace("'", "\'");
+		json += elBegin + elQuote + 'titel' + elQuote + ':' + elQuote + titel + elQuote;
 		json += elLijm;
 		json += elQuote + 'tekst' + elQuote + ':' + elQuote + $("#invoerMaandTekst"+ix).val() + elQuote + elEind;
 		if (i!=12) {
@@ -129,7 +127,6 @@ var maakJSONVanInvoer = function() {
 	json += ']}';
 	return url + '?maandIndex=' + gSelectedMaandIndex + '&instellingen=' + encodeURIComponent(json);
 }
-
 
 
 // maak een url die je kan opslaan
