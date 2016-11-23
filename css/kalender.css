@@ -34,11 +34,19 @@
 	text-align:center;
 }
 
+#linkVoorOpslag {
+	font-style:italic;
+}
 .linkVoorOpslagVerborgen{
 	visibility:hidden;
 }
 .linkVoorOpslagZichtbaar{
 	visibility:block;
+}
+
+#serializeJSON {
+	cursor: pointer;
+	font-style:italic;
 }
 /* einde instellingen: */
 
@@ -99,10 +107,14 @@
 .resultaatMaandTekst {
 	text-align: left;
 	border:0px;
+	/* Zie: https://css-tricks.com/almanac/properties/w/whitespace/ */
+	white-space: pre-line;
 }
 .resultaatMaandTitel {
 	text-align: left;
 	border:0px;
+	/* Zie: https://css-tricks.com/almanac/properties/w/whitespace/ */
+	white-space: pre-line;
 }
 /* einde resultaat */
 
